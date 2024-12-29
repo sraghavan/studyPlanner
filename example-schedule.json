@@ -1,0 +1,28 @@
+{
+  "lastUpdated": "2024-03-14T12:00:00.000Z",
+  "schedule": {
+    "March 2024": {
+      "Mathematics": [
+        {
+          "topic": "1. Review of Number Concepts",
+          "date": "3/14/2024",
+          "startTime": "09:00 AM",
+          "endTime": "10:00 AM",
+          "completed": false
+        }
+      ],
+      "Physics": [
+        {
+          "topic": "P1 - Motion",
+          "date": "3/15/2024",
+          "startTime": "02:00 PM",
+          "endTime": "03:00 PM",
+          "completed": true
+        }
+      ]
+    },
+    "April 2024": {
+      // ... similar structure for other months
+    }
+  }
+} 
