@@ -14,7 +14,10 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-  FormLabel
+  FormLabel,
+  Checkbox,
+  Box,
+  Typography
 } from '@mui/material';
 import subjectsData from '../data/subjects.json';
 
@@ -198,32 +201,65 @@ function StudyDialog({ open, onClose, selectedSlot, onSave, editMode, editData }
 
             {formData.recurrence.type === 'specific-days' && (
               <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel>Select Days</InputLabel>
-                  <Select
-                    multiple
-                    value={formData.recurrence.daysOfWeek}
-                    onChange={(e) => {
-                      setFormData(prev => ({
-                        ...prev,
-                        recurrence: {
-                          ...prev.recurrence,
-                          daysOfWeek: e.target.value
-                        }
-                      }));
-                    }}
-                    renderValue={(selected) => {
-                      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                      return selected.map(day => days[day]).join(', ');
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">Select Days</FormLabel>
+                  <Box 
+                    sx={{ 
+                      display: 'flex', 
+                      flexWrap: 'wrap', 
+                      gap: 1,
+                      mt: 1
                     }}
                   >
-                    {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-                      .map((day, index) => (
-                        <MenuItem key={index} value={index}>
-                          {day}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    {[
+                      'Sunday',
+                      'Monday',
+                      'Tuesday',
+                      'Wednesday',
+                      'Thursday',
+                      'Friday',
+                      'Saturday'
+                    ].map((day, index) => (
+                      <FormControlLabel
+                        key={index}
+                        control={
+                          <Checkbox
+                            checked={formData.recurrence.daysOfWeek.includes(index)}
+                            onChange={(e) => {
+                              setFormData(prev => ({
+                                ...prev,
+                                recurrence: {
+                                  ...prev.recurrence,
+                                  daysOfWeek: e.target.checked
+                                    ? [...prev.recurrence.daysOfWeek, index]
+                                    : prev.recurrence.daysOfWeek.filter(d => d !== index)
+                                }
+                              }));
+                            }}
+                            sx={{
+                              '&.Mui-checked': {
+                                color: 'primary.main',
+                              }
+                            }}
+                          />
+                        }
+                        label={
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              minWidth: '80px',
+                              '@media (max-width: 600px)': {
+                                minWidth: '60px',
+                                fontSize: '0.8rem'
+                              }
+                            }}
+                          >
+                            {day}
+                          </Typography>
+                        }
+                      />
+                    ))}
+                  </Box>
                 </FormControl>
               </Grid>
             )}

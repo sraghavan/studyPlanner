@@ -68,7 +68,35 @@ function StudyPlanner() {
     }
   }, [studySessions]);
 
-  // Memoize the calendar options to prevent re-renders
+  // Define handlers first
+  const handleSelect = useCallback((info) => {
+    setSelectedSlot({
+      id: format(info.start, 'yyyy-MM-dd-HH:mm'),
+      start: info.start,
+      end: info.end,
+      startTime: format(info.start, 'h:mm a'),
+      endTime: format(info.end, 'h:mm a'),
+      date: info.start
+    });
+    setDialogOpen(true);
+  }, []);
+
+  const handleDateClick = useCallback((info) => {
+    const end = new Date(info.date);
+    end.setHours(end.getHours() + 1);
+    
+    setSelectedSlot({
+      id: format(info.date, 'yyyy-MM-dd-HH:mm'),
+      start: info.date,
+      end: end,
+      startTime: format(info.date, 'h:mm a'),
+      endTime: format(end, 'h:mm a'),
+      date: info.date
+    });
+    setDialogOpen(true);
+  }, []);
+
+  // Then use them in calendarOptions
   const calendarOptions = useMemo(() => ({
     plugins: [timeGridPlugin, interactionPlugin],
     initialView: "timeGridWeek",
@@ -85,14 +113,16 @@ function StudyPlanner() {
       center: 'title',
       right: ''
     },
-    eventOverlap: false,
-    selectOverlap: false,
+    selectable: true,
+    selectMirror: true,
+    unselectAuto: true,
     editable: false,
     eventDurationEditable: false,
     eventStartEditable: false,
     eventResourceEditable: false,
-    slotEventOverlap: false
-  }), [selectedMonth]);
+    dateClick: handleDateClick,
+    select: handleSelect
+  }), [selectedMonth, handleDateClick, handleSelect]);
 
   const handleSaveStudy = (studyData) => {
     const eventId = editData ? editData.id : format(studyData.start, 'yyyy-MM-dd-HH:mm');
@@ -252,21 +282,6 @@ function StudyPlanner() {
         setDialogOpen(true);
       }
     }
-  };
-
-  const handleSelect = (selectInfo) => {
-    const startTime = format(selectInfo.start, 'h:mm a');
-    const endTime = format(selectInfo.end, 'h:mm a');
-    
-    setSelectedSlot({
-      id: format(selectInfo.start, 'yyyy-MM-dd-HH:mm'),
-      start: selectInfo.start,
-      end: selectInfo.end,
-      startTime,
-      endTime,
-      date: selectInfo.start
-    });
-    setDialogOpen(true);
   };
 
   const handleDeleteEvent = useCallback((eventId) => {
@@ -447,7 +462,6 @@ function StudyPlanner() {
             <FullCalendar
               {...calendarOptions}
               ref={calendarRef}
-              select={handleSelect}
               eventClick={(info) => {
                 const isDeleteButton = info.jsEvent.target.closest('.delete-event');
                 if (!isDeleteButton) {
