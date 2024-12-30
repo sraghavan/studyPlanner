@@ -2,7 +2,10 @@ const STORAGE_KEY = 'study_sessions';
 
 export const saveStudySessions = (sessions) => {
   try {
+    console.log('Saving to localStorage:', sessions);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+    const saved = localStorage.getItem(STORAGE_KEY);
+    console.log('Verified saved data:', JSON.parse(saved));
     return true;
   } catch (error) {
     console.error('Error saving study sessions:', error);

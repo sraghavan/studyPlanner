@@ -17,6 +17,7 @@ import { format } from 'date-fns';
 import '../styles/Dashboard.css';
 import DatePrintView from './PrintViews/DatePrintView';
 import SubjectPrintView from './PrintViews/SubjectPrintView';
+import { loadStudySessions } from '../services/storageService';
 
 function Dashboard() {
   const [schedule, setSchedule] = useState(null);
@@ -24,14 +25,41 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('date'); // 'date' or 'subject'
 
-  const fetchSchedule = useCallback(async () => {
-    try {
-      const response = await fetch('/api/schedule');
-      if (!response.ok) {
-        throw new Error('Failed to load schedule');
+  const formatScheduleData = useCallback((studySessions) => {
+    // Convert the study sessions into the format expected by DateView and SubjectView
+    const formattedSchedule = {};
+    
+    Object.values(studySessions).forEach(session => {
+      const month = format(new Date(session.start), 'MMMM yyyy');
+      const subject = session.subject;
+      
+      if (!formattedSchedule[month]) {
+        formattedSchedule[month] = {};
       }
-      const data = await response.json();
-      setSchedule(data);
+      if (!formattedSchedule[month][subject]) {
+        formattedSchedule[month][subject] = [];
+      }
+
+      formattedSchedule[month][subject].push({
+        topic: session.topic,
+        date: format(new Date(session.start), 'M/d/yyyy'),
+        startTime: format(new Date(session.start), 'hh:mm a'),
+        endTime: format(new Date(session.end), 'hh:mm a'),
+        completed: session.completed
+      });
+    });
+
+    return {
+      lastUpdated: new Date().toISOString(),
+      schedule: formattedSchedule
+    };
+  }, []);
+
+  useEffect(() => {
+    try {
+      const studySessions = loadStudySessions();
+      const formattedData = formatScheduleData(studySessions);
+      setSchedule(formattedData);
       setError(null);
     } catch (error) {
       console.error('Error loading schedule:', error);
@@ -39,11 +67,7 @@ function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  useEffect(() => {
-    fetchSchedule();
-  }, [fetchSchedule]);
+  }, [formatScheduleData]);
 
   const handleViewChange = (event, newView) => {
     if (newView !== null) {

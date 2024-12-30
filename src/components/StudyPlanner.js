@@ -301,7 +301,9 @@ function StudyPlanner() {
 
     try {
       // Save to localStorage
-      saveStudySessions(studySessions);
+      console.log('Attempting to save to localStorage...');
+      const localSaved = saveStudySessions(studySessions);
+      console.log('localStorage save result:', localSaved);
       
       // Save to file
       await saveScheduleToFile(studySessions);
@@ -312,7 +314,6 @@ function StudyPlanner() {
         show: true
       });
       
-      // Keep success message visible
       setTimeout(() => {
         setSaveStatus(prev => ({
           ...prev,
