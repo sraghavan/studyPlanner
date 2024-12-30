@@ -1,0 +1,70 @@
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+
+@media print {
+  body {
+    background-color: white;
+  }
+
+  .screen-only {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .MuiPaper-root {
+    box-shadow: none !important;
+  }
+
+  .subject-section {
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+  }
+
+  .MuiGrid-container {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .MuiGrid-item {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .MuiCard-root {
+    margin-bottom: 16px !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .MuiCardContent-root {
+    padding: 12px !important;
+  }
+
+  .MuiTypography-h4 {
+    margin-bottom: 24px !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .MuiTypography-h5 {
+    margin-bottom: 16px !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .MuiTypography-h6 {
+    font-size: 1.2rem !important;
+    margin-bottom: 12px !important;
+  }
+
+  .MuiBox-root {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+} 
